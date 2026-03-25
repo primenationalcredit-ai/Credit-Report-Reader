@@ -63,6 +63,8 @@ If there is NO dedicated Collections section, identify collectors by:
 • Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Caine & Weiner, Nationwide Capital
 • Account opened date is LATER than the original delinquency date
 
+ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: "CBE Group (Charter Communications) $110 (Jan 26)". If no original creditor is listed, just use the collector name alone.
+
 DATE for collections: Use Date Assigned or Date Opened. Format: Mon YY
 
 NOTE: The same collection agency can appear MULTIPLE TIMES for different debts — list each separately if they have different account numbers, original creditors, or assigned dates.
@@ -184,7 +186,7 @@ NEGATIVE ACCOUNTS: [total]
 
 [X] COLLECTION(S)
 
-[collector name]  $[balance]  ([Mon YY])
+[collector name] ([original creditor if available])  $[balance]  ([Mon YY])
 
 ---
 
