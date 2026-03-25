@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login — ASAP Consultation Notes</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f2a4a;
+    --navy-mid: #1a3d6e;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--navy-mid);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: #fff;
+  }
+  .logo-text { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  h1 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 1.75rem; }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    flex: 1; padding: 7px; border: none;
+    background: none; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    border-radius: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .tab.active { background: var(--surface); color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+  .field input {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); background: var(--bg); outline: none;
+    transition: border 0.15s;
+  }
+  .field input:focus { border-color: var(--accent); background: var(--surface); }
+
+  .submit-btn {
+    width: 100%; padding: 11px;
+    background: var(--navy-mid); color: #fff;
+    border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: background 0.15s;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover:not(:disabled) { background: #2a5298; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .error-msg {
+    background: var(--danger-light);
+    border: 1px solid #fca5a5;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 1rem;
+    display: none;
+  }
+  .success-msg {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--success);
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="logo">
+    <div class="logo-icon">AC</div>
+    <div>
+      <div class="logo-text">ASAP Credit Repair USA</div>
+      <div class="logo-sub">Consultation Notes Producer</div>
+    </div>
+  </div>
+
+  <h1>Welcome back</h1>
+  <p class="subtitle">Sign in to your consultant account</p>
+
+  <div class="tabs">
+    <button class="tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" id="signupTab" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <div id="loginForm">
+    <div class="field">
+      <label>Email address</label>
+      <input type="email" id="loginEmail" placeholder="you@asapcreditrepairusa.com" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()" />
+    </div>
+    <button class="submit-btn" id="loginBtn" onclick="handleLogin()">Sign In</button>
+  </div>
+
+  <div id="signupForm" style="display:none;">
+    <div class="field">
+      <label>Full name</label>
+      <input type="text" id="signupName" placeholder="Your name" />
+    </div>
+    <div class="field">
+      <label>Email address</label>
+      <input type="email" id="signupEmail" placeholder="you@asapcreditrepairusa.com" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="signupPassword" placeholder="Min. 8 characters" onkeydown="if(event.key==='Enter')handleSignup()" />
+    </div>
+    <button class="submit-btn" id="signupBtn" onclick="handleSignup()">Create Account</button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+</div>
+
+<script>
+  // ── CONFIG — paste your Supabase values here ──────────────
+  const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+  // ──────────────────────────────────────────────────────────
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Redirect if already logged in
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = '/app.html';
+  });
+
+  function switchTab(tab) {
+    document.getElementById('loginForm').style.display  = tab === 'login'  ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('loginTab').classList.toggle('active',  tab === 'login');
+    document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
+    hideMessages();
+  }
+
+  async function handleLogin() {
+    const btn = document.getElementById('loginBtn');
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) { showError('Please enter your email and password.'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      showError(error.message);
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    } else {
+      window.location.href = '/app.html';
+    }
+  }
+
+  async function handleSignup() {
+    const btn = document.getElementById('signupBtn');
+    const name  = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const pw    = document.getElementById('signupPassword').value;
+    if (!name || !email || !pw) { showError('Please fill in all fields.'); return; }
+    if (pw.length < 8) { showError('Password must be at least 8 characters.'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Creating account…';
+
+    const { error } = await sb.auth.signUp({
+      email, password: pw,
+      options: { data: { full_name: name } }
+    });
+
+    if (error) {
+      showError(error.message);
+    } else {
+      showSuccess('Account created! Check your email to confirm, then sign in.');
+      switchTab('login');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg; el.style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+  }
+  function showSuccess(msg) {
+    const el = document.getElementById('successMsg');
+    el.textContent = msg; el.style.display = 'block';
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+  function hideMessages() {
+    document.getElementById('errorMsg').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'none';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consultation Notes — ASAP Credit Repair USA</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f2a4a;
+    --navy-mid: #1a3d6e;
+    --navy-light: #2a5298;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-mid: #cbd5e1;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* TOP BAR */
+  .topbar {
+    background: var(--navy); padding: 0 1.5rem; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+  .topbar-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .topbar-sub  { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+  .topbar-user { display: flex; align-items: center; gap: 10px; }
+  .user-email  { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .logout-btn  { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; padding: 4px 10px; cursor: pointer; transition: all 0.15s; }
+  .logout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  /* LAYOUT */
+  .main { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 52px); }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .sidebar-section-title { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 6px; }
+  .divider { height: 1px; background: var(--border); }
+
+  /* UPLOAD SLOTS */
+  .upload-slots { display: flex; flex-direction: column; gap: 6px; }
+  .upload-slot { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border: 1.5px dashed var(--border-mid); border-radius: var(--radius); cursor: pointer; transition: all 0.2s; background: var(--bg); }
+  .upload-slot:hover { border-color: var(--accent); background: var(--accent-light); }
+  .upload-slot.loaded { border-color: var(--success); background: var(--success-light); border-style: solid; }
+  .upload-slot.loading { border-color: var(--accent); background: var(--accent-light); border-style: solid; cursor: default; }
+  .slot-icon { font-size: 16px; flex-shrink: 0; }
+  .slot-text { flex: 1; min-width: 0; }
+  .slot-label { font-size: 11px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .slot-sub   { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .upload-slot.loaded .slot-label { color: var(--success); }
+  .slot-remove { font-size: 13px; color: var(--text-light); cursor: pointer; flex-shrink: 0; padding: 2px 4px; border-radius: 4px; border: none; background: none; }
+  .slot-remove:hover { color: var(--danger); background: var(--danger-light); }
+  .upload-add-btn { width: 100%; padding: 7px; border: 1.5px dashed var(--border-mid); border-radius: var(--radius); background: none; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; text-align: center; margin-top: 6px; }
+  .upload-add-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .upload-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .multi-hint { font-size: 10px; color: var(--text-light); text-align: center; margin-top: 3px; }
+  input[type="file"] { display: none; }
+
+  /* GENERATE BTN */
+  .generate-btn { width: 100%; padding: 11px; background: var(--navy-mid); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .generate-btn:hover:not(:disabled) { background: var(--navy-light); }
+  .generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* HISTORY */
+  .history-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .clear-btn { font-size: 10px; color: var(--text-light); background: none; border: none; cursor: pointer; }
+  .clear-btn:hover { color: var(--danger); }
+  .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+  .history-item { padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; }
+  .history-item:hover, .history-item.active { border-color: var(--accent); background: var(--accent-light); }
+  .history-item-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-item-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .history-empty { font-size: 12px; color: var(--text-light); text-align: center; padding: 1.5rem 0; }
+
+  /* CONTENT */
+  .content { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; overflow: auto; }
+
+  /* PLACEHOLDER */
+  .placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-light); text-align: center; padding: 4rem 2rem; }
+  .placeholder-icon { font-size: 44px; opacity: 0.35; }
+  .placeholder h2 { font-size: 16px; font-weight: 500; color: var(--text-muted); }
+  .placeholder p { font-size: 13px; max-width: 340px; line-height: 1.6; }
+  .badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 4px; }
+  .supported-badge { display: inline-block; background: var(--accent-light); color: var(--navy-mid); border-radius: 4px; padding: 2px 8px; font-size: 10px; font-weight: 600; }
+
+  /* OUTPUT */
+  .output-header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border); gap: 1rem; }
+  .output-client-name { font-size: 16px; font-weight: 600; color: var(--navy); }
+  .output-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .source-badge { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--accent-light); color: var(--navy-mid); }
+  .output-actions { display: flex; gap: 7px; flex-shrink: 0; }
+  .action-btn { padding: 7px 13px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.15s; }
+  .action-btn:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+  .action-btn.primary { background: var(--navy-mid); color: #fff; border-color: var(--navy-mid); }
+  .action-btn.primary:hover { background: var(--navy-light); border-color: var(--navy-light); }
+  .output-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; white-space: pre-wrap; font-family: 'DM Mono', monospace; font-size: 12px; line-height: 2; color: var(--text); min-height: 500px; overflow-y: auto; }
+
+  /* ERROR */
+  .error-box { background: var(--danger-light); border: 1px solid #fca5a5; border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--danger); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">AC</div>
+    <div>
+      <div class="topbar-name">ASAP Credit Repair USA</div>
+      <div class="topbar-sub">Consultation Notes Producer</div>
+    </div>
+  </div>
+  <div class="topbar-user">
+    <span class="user-email" id="userEmail">Loading…</span>
+    <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- UPLOAD -->
+    <div>
+      <div class="sidebar-section-title">Credit Report PDF(s)</div>
+      <div class="upload-slots" id="uploadSlots"></div>
+      <button class="upload-add-btn" id="addFileBtn" onclick="document.getElementById('fileInput').click()">+ Add Report PDF</button>
+      <div class="multi-hint" id="multiHint">Upload 1–3 bureau reports · duplicates auto-removed</div>
+      <input type="file" id="fileInput" accept="application/pdf" onchange="handleFileSelect(event)" />
+    </div>
+
+    <!-- GENERATE -->
+    <button class="generate-btn" id="generateBtn" onclick="generateNotes()" disabled>
+      <span id="btnIcon">✦</span>
+      <span id="btnText">Generate Consultation Notes</span>
+    </button>
+
+    <div class="divider"></div>
+
+    <!-- HISTORY -->
+    <div class="history-wrap">
+      <div class="history-header">
+        <div class="sidebar-section-title" style="margin-bottom:0;">Recent Reports</div>
+        <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">No reports yet</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="contentArea">
+    <div class="placeholder">
+      <div class="placeholder-icon">📋</div>
+      <h2>No report loaded</h2>
+      <p>Upload a credit report PDF (or up to 3 bureau reports at once), then click Generate.</p>
+      <div class="badge-row">
+        <span class="supported-badge">myFICO</span>
+        <span class="supported-badge">Experian.com</span>
+        <span class="supported-badge">SmartCredit</span>
+        <span class="supported-badge">Credit Karma</span>
+        <span class="supported-badge">TransUnion.com</span>
+        <span class="supported-badge">AnnualCreditReport</span>
+        <span class="supported-badge">MyFreeScoreNow</span>
+        <span class="supported-badge">3-Bureau</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── CONFIG — paste your Supabase values here ──────────────
+  const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+  // ──────────────────────────────────────────────────────────
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  let currentUser = null;
+  let uploadedFiles = []; // [{ name, text, pages }]
+  let historyCache  = []; // from Supabase
+
+  // ── Auth guard ─────────────────────────────────────────────
+  async function initAuth() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = '/login.html'; return; }
+    currentUser = session.user;
+    document.getElementById('userEmail').textContent = currentUser.email;
+    renderSlots();
+    loadHistory();
+  }
+
+  async function handleLogout() {
+    await sb.auth.signOut();
+    window.location.href = '/login.html';
+  }
+
+  initAuth();
+
+  // ── File handling ──────────────────────────────────────────
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (file && file.type === 'application/pdf') loadFile(file);
+  }
+
+  async function loadFile(file) {
+    if (uploadedFiles.length >= 3) { alert('Maximum 3 reports. Remove one first.'); return; }
+    if (uploadedFiles.find(f => f.name === file.name)) { alert('This file is already loaded.'); return; }
+
+    // Show loading slot immediately
+    const loadingId = 'loading-' + Date.now();
+    uploadedFiles.push({ name: file.name, text: null, pages: null, loadingId });
+    renderSlots();
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const totalPages = pdf.numPages;
+      let fullText = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        fullText += `\n--- PAGE ${i} ---\n` + content.items.map(item => item.str).join(' ');
+        // Update progress label
+        const idx = uploadedFiles.findIndex(f => f.loadingId === loadingId);
+        if (idx >= 0) {
+          uploadedFiles[idx]._progress = `Reading page ${i}/${totalPages}…`;
+          renderSlots();
+        }
+      }
+
+      const idx = uploadedFiles.findIndex(f => f.loadingId === loadingId);
+      if (idx >= 0) {
+        uploadedFiles[idx] = { name: file.name, text: fullText, pages: totalPages };
+        renderSlots();
+        checkReady();
+      }
+    } catch (err) {
+      // Remove failed slot
+      uploadedFiles = uploadedFiles.filter(f => f.loadingId !== loadingId);
+      renderSlots();
+      alert('Could not read PDF: ' + err.message);
+    }
+  }
+
+  function removeFile(idx) {
+    uploadedFiles.splice(idx, 1);
+    renderSlots();
+    checkReady();
+  }
+
+  function renderSlots() {
+    const container = document.getElementById('uploadSlots');
+    const addBtn    = document.getElementById('addFileBtn');
+    const hint      = document.getElementById('multiHint');
+
+    if (uploadedFiles.length === 0) {
+      container.innerHTML = `
+        <div class="upload-slot" onclick="document.getElementById('fileInput').click()">
+          <div class="slot-icon">📄</div>
+          <div class="slot-text">
+            <div class="slot-label">Click to upload a report PDF</div>
+            <div class="slot-sub">myFICO · Experian · AnnualCreditReport · any bureau</div>
+          </div>
+        </div>`;
+    } else {
+      container.innerHTML = uploadedFiles.map((f, i) => {
+        if (f.loadingId) {
+          return `<div class="upload-slot loading">
+            <div class="slot-icon">⏳</div>
+            <div class="slot-text">
+              <div class="slot-label">${escapeHtml(f.name.length > 30 ? f.name.substring(0,30)+'…' : f.name)}</div>
+              <div class="slot-sub">${f._progress || 'Reading PDF…'}</div>
+            </div>
+          </div>`;
+        }
+        return `<div class="upload-slot loaded">
+          <div class="slot-icon">✅</div>
+          <div class="slot-text">
+            <div class="slot-label" title="${escapeHtml(f.name)}">${escapeHtml(f.name.length > 30 ? f.name.substring(0,30)+'…' : f.name)}</div>
+            <div class="slot-sub">Report ${i+1} · ${f.pages} pages</div>
+          </div>
+          <button class="slot-remove" onclick="removeFile(${i})" title="Remove">✕</button>
+        </div>`;
+      }).join('');
+    }
+
+    const ready = uploadedFiles.length >= 3 || uploadedFiles.some(f => f.loadingId);
+    addBtn.disabled = ready;
+    addBtn.style.display = uploadedFiles.length >= 3 ? 'none' : 'block';
+    addBtn.textContent = uploadedFiles.length === 0 ? '+ Add Report PDF' : '+ Add Another Bureau Report';
+
+    const loaded = uploadedFiles.filter(f => !f.loadingId).length;
+    if (loaded === 0)      hint.textContent = 'Upload 1–3 bureau reports · duplicates auto-removed';
+    else if (loaded === 1) hint.textContent = '1 report loaded · add more for full 3-bureau view';
+    else if (loaded === 2) hint.textContent = '2 reports loaded · add a 3rd for complete coverage';
+    else                   hint.textContent = '3 reports loaded · all bureaus covered';
+  }
+
+  function checkReady() {
+    const readyFiles = uploadedFiles.filter(f => f.text);
+    document.getElementById('generateBtn').disabled = readyFiles.length === 0;
+  }
+
+  // ── Generate notes ─────────────────────────────────────────
+  async function generateNotes() {
+    const readyFiles = uploadedFiles.filter(f => f.text);
+    if (readyFiles.length === 0) return;
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = '/login.html'; return; }
+
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    document.getElementById('btnIcon').innerHTML = '<div class="spinner"></div>';
+    document.getElementById('btnText').textContent = 'Analyzing report…';
+
+    const fileCount = readyFiles.length;
+    const fileNames = readyFiles.map(f => f.name).join(', ');
+
+    try {
+      const response = await fetch('/.netlify/functions/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          files: readyFiles.map(f => ({ name: f.name, text: f.text, pages: f.pages })),
+          fileCount,
+          fileNames,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        showError(data.error || `Server error ${response.status}`);
+      } else {
+        const notes = data.notes;
+        const nameMatch  = notes.match(/CONSULTATION NOTES - (.+)/);
+        const sourceMatch = notes.match(/REPORT SOURCE: (.+)/);
+        const clientName  = nameMatch  ? nameMatch[1].trim()  : fileNames;
+        const reportSource = sourceMatch ? sourceMatch[1].trim() : 'Auto-Detected';
+
+        // Save to Supabase
+        const { data: saved, error: saveError } = await sb.from('consultations').insert({
+          user_id: session.user.id,
+          client_name: clientName,
+          report_source: reportSource,
+          file_names: fileNames,
+          notes,
+        }).select().single();
+
+        if (saveError) console.warn('Save error (notes still shown):', saveError.message);
+
+        const entry = saved || {
+          id: Date.now(),
+          client_name: clientName,
+          report_source: reportSource,
+          file_names: fileNames,
+          notes,
+          created_at: new Date().toISOString(),
+        };
+
+        historyCache.unshift(entry);
+        renderHistory();
+        showOutput(entry);
+      }
+
+    } catch (err) {
+      showError(`Network error: ${err.message}. Check your internet connection.`);
+    }
+
+    btn.disabled = false;
+    document.getElementById('btnIcon').textContent = '✦';
+    document.getElementById('btnText').textContent = 'Generate Consultation Notes';
+    checkReady();
+  }
+
+  // ── History ────────────────────────────────────────────────
+  async function loadHistory() {
+    const { data, error } = await sb
+      .from('consultations')
+      .select('id, client_name, report_source, file_names, notes, created_at')
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (!error && data) {
+      historyCache = data;
+      renderHistory();
+    }
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    if (historyCache.length === 0) {
+      list.innerHTML = '<div class="history-empty">No reports yet</div>';
+      return;
+    }
+    list.innerHTML = historyCache.map(entry => {
+      const date = new Date(entry.created_at).toLocaleDateString();
+      const file = (entry.file_names || '').substring(0, 26);
+      return `<div class="history-item" data-id="${entry.id}" onclick="loadFromHistory('${entry.id}')">
+        <div class="history-item-name">${escapeHtml(entry.client_name)}</div>
+        <div class="history-item-meta">${date} · ${escapeHtml(file)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function loadFromHistory(id) {
+    const entry = historyCache.find(h => String(h.id) === String(id));
+    if (entry) showOutput(entry);
+  }
+
+  async function clearHistory() {
+    if (!confirm('Clear all your saved notes? This cannot be undone.')) return;
+    await sb.from('consultations').delete().eq('user_id', currentUser.id);
+    historyCache = [];
+    renderHistory();
+    document.getElementById('contentArea').innerHTML = `
+      <div class="placeholder">
+        <div class="placeholder-icon">📋</div>
+        <h2>No report loaded</h2>
+        <p>Upload a credit report PDF then click Generate.</p>
+      </div>`;
+  }
+
+  // ── Output rendering ───────────────────────────────────────
+  function showOutput(entry) {
+    const date = new Date(entry.created_at).toLocaleDateString();
+    document.getElementById('contentArea').innerHTML = `
+      <div class="output-header">
+        <div>
+          <div class="output-client-name">${escapeHtml(entry.client_name)}</div>
+          <div class="output-meta">
+            <span class="source-badge">${escapeHtml(entry.report_source || 'Unknown')}</span>
+            ${escapeHtml((entry.file_names || '').substring(0,40))} &nbsp;·&nbsp; ${date}
+          </div>
+        </div>
+        <div class="output-actions">
+          <button class="action-btn" onclick="copyNotes()">Copy Notes</button>
+          <button class="action-btn primary" onclick="printNotes()">Print / Save PDF</button>
+        </div>
+      </div>
+      <div class="output-box" id="outputBox">${escapeHtml(entry.notes)}</div>
+    `;
+    document.querySelectorAll('.history-item').forEach(el => el.classList.remove('active'));
+    const active = document.querySelector(`[data-id="${entry.id}"]`);
+    if (active) active.classList.add('active');
+  }
+
+  function showError(msg) {
+    document.getElementById('contentArea').innerHTML = `
+      <div class="error-box">
+        <strong>Error generating notes:</strong> ${escapeHtml(msg)}<br/><br/>
+        Common fixes:<br/>
+        &bull; Check your internet connection<br/>
+        &bull; Make sure the file is a valid credit report PDF<br/>
+        &bull; If the error says "timeout", the report may be too large — try uploading one bureau at a time<br/>
+        &bull; If you see "auth" or "unauthorized", try signing out and back in
+      </div>`;
+  }
+
+  function copyNotes() {
+    const box = document.getElementById('outputBox');
+    if (!box) return;
+    navigator.clipboard.writeText(box.textContent).then(() => {
+      const btn = document.querySelector('.action-btn');
+      if (btn) { btn.textContent = 'Copied! ✓'; setTimeout(() => btn.textContent = 'Copy Notes', 2000); }
+    });
+  }
+
+  function printNotes() {
+    const box = document.getElementById('outputBox');
+    if (!box) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<html><head><title>Consultation Notes</title>
+      <style>body{font-family:monospace;font-size:13px;line-height:1.8;padding:2rem;white-space:pre-wrap;color:#000;}
+      @media print{body{padding:1rem;}}</style></head>
+      <body>${escapeHtml(box.textContent)}</body></html>`);
+    w.document.close();
+    w.print();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

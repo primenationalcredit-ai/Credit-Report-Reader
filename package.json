@@ -1,0 +1,8 @@
+{
+  "name": "asap-consultation-notes",
+  "version": "1.0.0",
+  "description": "ASAP Credit Repair — Consultation Notes Producer",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
