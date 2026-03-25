@@ -65,7 +65,7 @@ If there is NO dedicated Collections section, identify collectors by:
 
 ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: "CBE Group (Charter Communications) $110 (Jan 26)". If no original creditor is listed, just use the collector name alone.
 
-ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: "CBE Group (Charter Communications) `$110 (Jan 26)". If no original creditor is listed, just use the collector name alone.
+ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: CBE Group (Charter Communications) 110 (Jan 26). If no original creditor is listed, just use the collector name alone.
 
 DATE for collections: Use Date Assigned or Date Opened. Format: Mon YY
 
