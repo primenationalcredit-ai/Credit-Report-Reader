@@ -38,7 +38,7 @@ Identifying a charge-off (any of these signals):
 • Account has a non-zero "Charge Off Amount" field
 • Account type is a bank, credit union, auto lender, mortgage servicer, retail store, utility, phone carrier, student loan servicer, or any entity that originally extended the credit
 • The creditor name is a recognizable original lender: Capital One, Chase, Citibank, Bank of America, Synchrony, Wells Fargo, Discover, Ally, Ford Motor Credit, Chrysler Capital, Toyota Financial, GM Financial, Navient, Sallie Mae, Nelnet, AES/PHEAA, FedLoan, MOHELA, PHEAA, ACS, Great Lakes, US Dept of Education, Verizon, AT&T, T-Mobile, Sprint, any utility company, any retail store/brand name
-• IMPORTANT: If the report has a dedicated "Collections" section and an account appears there, classify it as a COLLECTION only — do NOT also list it as a charge-off. The charge-off step only applies to accounts NOT already captured in the dedicated Collections section.
+• IMPORTANT: An original lender (Wells Fargo, Upstart, OneMain, etc.) is a CHARGE-OFF even if their account also appears in a dedicated "Collections" section of the report — original lenders track their own charged-off accounts there. Only classify as a collection if the account is assigned to a THIRD-PARTY collector name.
 
 DATE for charge-offs: Use Date of Last Payment. If blank, use Date Last Active. If both blank, use Close Date. If only delinquency comments available, use the R9 date. Format: Mon YY
 
@@ -48,25 +48,24 @@ STEP 2 — COLLECTIONS (THIRD-PARTY DEBT COLLECTORS)
 A COLLECTION account has been sold or assigned to a THIRD-PARTY collector — not the original creditor.
 
 CRITICAL — DEDICATED COLLECTIONS SECTION RULE:
-Many report formats (especially myFICO 3-bureau and Equifax-powered reports) include a dedicated "Collections" section (often labeled "11. Collections" or just "Collections") near the end of the report. This section lists every account currently assigned to a collection agency, organized by bureau.
+Many reports include a dedicated "Collections" or "11. Collections" section near the end. When present:
+• Read every entry in that section carefully.
+• For EACH entry, determine if the "Agency Client" name is a THIRD-PARTY COLLECTOR or an ORIGINAL LENDER.
+• If the Agency Client is a third-party collector → classify as COLLECTION.
+• If the Agency Client is an original lender (bank, finance company, credit card issuer) → classify as CHARGE-OFF in Step 1 instead — do NOT list it as a collection.
 
-• If the report has a dedicated Collections section — READ IT FIRST before classifying any account.
-• Every account listed in that section IS a collection — list it regardless of whether the creditor name looks like an original lender (e.g. OneMain, Upstart, Wells Fargo appearing in a Collections section means they have assigned the debt to a collector or the debt is in collection status).
-• Use the "Date Assigned" field for the collection date.
-• Use the "Amount" field for the balance (if blank/N/A use $0).
-• If the same account appears under multiple bureaus in the Collections section, count it ONCE (deduplicate by account number).
-• The original creditor name may differ from the agency client name — note the original creditor in parentheses if available (e.g. "Nationwide Capital (TBO Bank) $2,308").
-• Do NOT also list these accounts as charge-offs — if an account is in the Collections section, classify it as a collection only.
+HOW TO TELL THEM APART in the Collections section:
+— THIRD-PARTY COLLECTORS (list as COLLECTION): Caine & Weiner, Nationwide Capital, Portfolio Recovery, Midland Credit, LVNV Funding, Cavalry, Jefferson Capital, Enhanced Recovery, IC System, Resurgent, any name that is clearly a debt collection agency
+— ORIGINAL LENDERS appearing in collections section (list as CHARGE-OFF): Wells Fargo, Bank of America, Capital One, Chase, Citibank, Discover, Upstart, OneMain, Synchrony, any recognizable bank/lender/finance company name — these are charge-offs being tracked in the collections section, not third-party collections
 
-If there is NO dedicated Collections section, use these signals to identify collections:
-• Account is listed under a "Collections" section
-• Creditor name includes: Recovery, Acquisitions, Funding, Collections, Portfolio, Acceptance, Solutions, Associates, Capital (debt buyer), Services, LLC (when paired with generic name)
-• Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Unifin, COML Accept, Central Research Inc, CRS, NCO, Amsher, Transworld Systems, Credit Corp Solutions, Absolute Resolutions, Wakefield & Associates, Caine & Weiner, Nationwide Capital
-• The account opened date is LATER than the original delinquency date
+If there is NO dedicated Collections section, identify collectors by:
+• Creditor name includes: Recovery, Acquisitions, Funding, Collections, Portfolio, Acceptance, Solutions, Associates
+• Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Caine & Weiner, Nationwide Capital
+• Account opened date is LATER than the original delinquency date
 
 DATE for collections: Use Date Assigned or Date Opened. Format: Mon YY
 
-NOTE: The same collection agency can appear MULTIPLE TIMES for different debts. These are NOT duplicates if they have different account numbers, original creditors, or assigned dates — list each one separately.
+NOTE: The same collection agency can appear MULTIPLE TIMES for different debts — list each separately if they have different account numbers, original creditors, or assigned dates.
 
 ═══════════════════════════════════════════
 STEP 3 — PUBLIC RECORDS (BANKRUPTCIES & JUDGMENTS)
@@ -110,6 +109,7 @@ Credit Karma format:
 ALL FORMATS — UNIVERSAL RULE:
 • Before moving on from any account, check if there is ANY "Payment Summary" table, "payment count" field, or delinquency comment. If the 30/60/90 Day count is non-zero OR any delinquency comment exists, that account MUST be listed as a late payment.
 • Never rely solely on grid cells — they are frequently blank in text-extracted PDFs even when delinquencies exist.
+• SAME CREDITOR MULTIPLE ACCOUNTS: If the same creditor (e.g. Affirm) has MULTIPLE separate accounts (different account numbers, different open dates), each account with late payments is its OWN separate late payment entry. Do NOT merge them into one. List each account separately even if the creditor name is the same — they are distinct tradelines.
 
 For EACH account with ANY late payment history:
 • Record: creditor name, worst delinquency level found (30/60/90/120), most recent month/year of that worst delinquency
