@@ -38,7 +38,7 @@ Identifying a charge-off (any of these signals):
 • Account has a non-zero "Charge Off Amount" field
 • Account type is a bank, credit union, auto lender, mortgage servicer, retail store, utility, phone carrier, student loan servicer, or any entity that originally extended the credit
 • The creditor name is a recognizable original lender: Capital One, Chase, Citibank, Bank of America, Synchrony, Wells Fargo, Discover, Ally, Ford Motor Credit, Chrysler Capital, Toyota Financial, GM Financial, Navient, Sallie Mae, Nelnet, AES/PHEAA, FedLoan, MOHELA, PHEAA, ACS, Great Lakes, US Dept of Education, Verizon, AT&T, T-Mobile, Sprint, any utility company, any retail store/brand name
-• NOTE: An R9 code in "LAST REPORTED DELINQUENCIES" alone does NOT make an account a charge-off if Charge Off Amount = N/A and the account shows $0 balance with "SETTLEMENT ACCEPTED" or "PAID FOR LESS THAN FULL BALANCE" — classify those as late payments instead.
+• IMPORTANT: If the report has a dedicated "Collections" section and an account appears there, classify it as a COLLECTION only — do NOT also list it as a charge-off. The charge-off step only applies to accounts NOT already captured in the dedicated Collections section.
 
 DATE for charge-offs: Use Date of Last Payment. If blank, use Date Last Active. If both blank, use Close Date. If only delinquency comments available, use the R9 date. Format: Mon YY
 
@@ -47,15 +47,26 @@ STEP 2 — COLLECTIONS (THIRD-PARTY DEBT COLLECTORS)
 ═══════════════════════════════════════════
 A COLLECTION account has been sold or assigned to a THIRD-PARTY collector — not the original creditor.
 
-Identifying a collector (any of these signals):
+CRITICAL — DEDICATED COLLECTIONS SECTION RULE:
+Many report formats (especially myFICO 3-bureau and Equifax-powered reports) include a dedicated "Collections" section (often labeled "11. Collections" or just "Collections") near the end of the report. This section lists every account currently assigned to a collection agency, organized by bureau.
+
+• If the report has a dedicated Collections section — READ IT FIRST before classifying any account.
+• Every account listed in that section IS a collection — list it regardless of whether the creditor name looks like an original lender (e.g. OneMain, Upstart, Wells Fargo appearing in a Collections section means they have assigned the debt to a collector or the debt is in collection status).
+• Use the "Date Assigned" field for the collection date.
+• Use the "Amount" field for the balance (if blank/N/A use $0).
+• If the same account appears under multiple bureaus in the Collections section, count it ONCE (deduplicate by account number).
+• The original creditor name may differ from the agency client name — note the original creditor in parentheses if available (e.g. "Nationwide Capital (TBO Bank) $2,308").
+• Do NOT also list these accounts as charge-offs — if an account is in the Collections section, classify it as a collection only.
+
+If there is NO dedicated Collections section, use these signals to identify collections:
 • Account is listed under a "Collections" section
 • Creditor name includes: Recovery, Acquisitions, Funding, Collections, Portfolio, Acceptance, Solutions, Associates, Capital (debt buyer), Services, LLC (when paired with generic name)
 • Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Unifin, COML Accept, Central Research Inc, CRS, NCO, Amsher, Transworld Systems, Credit Corp Solutions, Absolute Resolutions, Wakefield & Associates, Caine & Weiner, Nationwide Capital
-• The account opened date is LATER than the original delinquency date (debt buyer purchased it)
+• The account opened date is LATER than the original delinquency date
 
-DATE for collections: Use Date Opened. Format: Mon YY
+DATE for collections: Use Date Assigned or Date Opened. Format: Mon YY
 
-NOTE: The same collection agency can appear MULTIPLE TIMES for different debts (e.g. two separate Caine & Weiner accounts for two different original creditors). These are NOT duplicates — list each one separately if they have different account numbers, original creditors, or open dates.
+NOTE: The same collection agency can appear MULTIPLE TIMES for different debts. These are NOT duplicates if they have different account numbers, original creditors, or assigned dates — list each one separately.
 
 ═══════════════════════════════════════════
 STEP 3 — PUBLIC RECORDS (BANKRUPTCIES & JUDGMENTS)
