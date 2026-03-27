@@ -40,11 +40,10 @@ Identifying a charge-off (any of these signals):
 • The creditor name is a recognizable original lender: Capital One, Chase, Citibank, Bank of America, Synchrony, Wells Fargo, Discover, Ally, Ford Motor Credit, Chrysler Capital, Toyota Financial, GM Financial, Navient, Sallie Mae, Nelnet, AES/PHEAA, FedLoan, MOHELA, PHEAA, ACS, Great Lakes, US Dept of Education, Verizon, AT&T, T-Mobile, Sprint, any utility company, any retail store/brand name
 • IMPORTANT: An original lender (Wells Fargo, Upstart, OneMain, etc.) is a CHARGE-OFF even if their account also appears in a dedicated "Collections" section of the report — original lenders track their own charged-off accounts there. Only classify as a collection if the account is assigned to a THIRD-PARTY collector name.
 
-CRITICAL — ACCOUNT STATUS vs PAYMENT STATUS:
-• "Account Status = Derogatory" alone does NOT make an account a charge-off or negative.
-• You MUST confirm via the PAYMENT STATUS field OR the two-year payment history grid.
-• If Account Status = Derogatory BUT Payment Status = Current AND the payment history grid has no negative marks (no 30/60/90/120/CO codes), DO NOT list this account as a negative account at all.
-• Example: An auto loan showing "Account Status: Derogatory, Payment Status: Current, Balance: $0, Closed, Paid by dealer" with no payment grid marks = NOT a negative account.
+CRITICAL — ACCOUNT STATUS = DEROGATORY:
+• If Account Status = Derogatory on an original creditor account (bank, auto lender, finance company, credit card issuer, etc.), classify it as a CHARGE-OFF — no exceptions.
+• Derogatory account status overrides Payment Status, balance, comments, and payment history grid. Even if Payment Status = Current, balance = $0, or comments say "Closed" or "Paid by dealer" — if Account Status = Derogatory on an original creditor, it is a CHARGE-OFF.
+• Example: Westlake Financial, Account Status: Derogatory, Payment Status: Current, Balance: $0, Closed, Paid by dealer = CHARGE-OFF at $0.
 
 DATE for charge-offs: Use Date of Last Payment. If blank, use Date Last Active. If both blank, use Close Date. If only delinquency comments available, use the R9 date. Format: Mon YY
 
@@ -333,7 +332,7 @@ Key reminders:
   contentBlocks.push({ type: 'text', text: instructionText });
 
   // ── Call Anthropic API with auto-retry on overloaded ───────
-  const RETRY_DELAYS = [3000, 6000];
+  const RETRY_DELAYS = [5000, 10000, 15000];
   let lastError = null;
 
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
