@@ -123,8 +123,7 @@ STEP 5 — COUNT VERIFICATION
 ═══════════════════════════════════════════
 Count charge-offs, collections, public records, and late payments separately.
 NEGATIVE ACCOUNTS total = charge-offs + collections + public records + late payments
-The number in the section header MUST exactly match the number of items listed below it.
-Count items AFTER listing them to verify before writing the header number.
+CRITICAL COUNT RULE: Write ALL section items FIRST. Then physically count every line item you wrote. The NEGATIVE ACCOUNTS total and each section header number [X] must equal the exact count of lines listed under it � not an estimate, not a guess from a summary table. If your count says 13 items but a summary elsewhere says 19, trust your count of listed items, not the summary. Recount if needed before writing any number.
 
 ═══════════════════════════════════════════
 STEP 6 — DISPUTES
