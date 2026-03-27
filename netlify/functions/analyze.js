@@ -34,11 +34,17 @@ STEP 1 — CHARGE-OFFS (ORIGINAL CREDITOR DEFAULTS)
 A CHARGE-OFF is a debt written off by the ORIGINAL creditor.
 
 Identifying a charge-off (any of these signals):
-• Payment status says: "Charged Off", "Charge Off", "Charge-off", "CO", "Derogatory", "Bad Debt", "Written Off", OR comment says "CHARGED OFF ACCOUNT"
+• PAYMENT STATUS field (not Account Status) says: "Charged Off", "Charge Off", "Charge-off", "CO", "Derogatory", "Bad Debt", "Written Off", OR comment says "CHARGED OFF ACCOUNT"
 • Account has a non-zero "Charge Off Amount" field
 • Account type is a bank, credit union, auto lender, mortgage servicer, retail store, utility, phone carrier, student loan servicer, or any entity that originally extended the credit
 • The creditor name is a recognizable original lender: Capital One, Chase, Citibank, Bank of America, Synchrony, Wells Fargo, Discover, Ally, Ford Motor Credit, Chrysler Capital, Toyota Financial, GM Financial, Navient, Sallie Mae, Nelnet, AES/PHEAA, FedLoan, MOHELA, PHEAA, ACS, Great Lakes, US Dept of Education, Verizon, AT&T, T-Mobile, Sprint, any utility company, any retail store/brand name
 • IMPORTANT: An original lender (Wells Fargo, Upstart, OneMain, etc.) is a CHARGE-OFF even if their account also appears in a dedicated "Collections" section of the report — original lenders track their own charged-off accounts there. Only classify as a collection if the account is assigned to a THIRD-PARTY collector name.
+
+CRITICAL — ACCOUNT STATUS vs PAYMENT STATUS:
+• "Account Status = Derogatory" alone does NOT make an account a charge-off or negative.
+• You MUST confirm via the PAYMENT STATUS field OR the two-year payment history grid.
+• If Account Status = Derogatory BUT Payment Status = Current AND the payment history grid has no negative marks (no 30/60/90/120/CO codes), DO NOT list this account as a negative account at all.
+• Example: An auto loan showing "Account Status: Derogatory, Payment Status: Current, Balance: $0, Closed, Paid by dealer" with no payment grid marks = NOT a negative account.
 
 DATE for charge-offs: Use Date of Last Payment. If blank, use Date Last Active. If both blank, use Close Date. If only delinquency comments available, use the R9 date. Format: Mon YY
 
@@ -55,17 +61,15 @@ Many reports include a dedicated "Collections" or "11. Collections" section near
 • If the Agency Client is an original lender (bank, finance company, credit card issuer) → classify as CHARGE-OFF in Step 1 instead — do NOT list it as a collection.
 
 HOW TO TELL THEM APART in the Collections section:
-— THIRD-PARTY COLLECTORS (list as COLLECTION): Caine & Weiner, Nationwide Capital, Portfolio Recovery, Midland Credit, LVNV Funding, Cavalry, Jefferson Capital, Enhanced Recovery, IC System, Resurgent, any name that is clearly a debt collection agency
+— THIRD-PARTY COLLECTORS (list as COLLECTION): Caine & Weiner, Nationwide Capital, Portfolio Recovery, Midland Credit, LVNV Funding, Cavalry, Jefferson Capital, Enhanced Recovery, IC System, Resurgent, Credence RM, any name that is clearly a debt collection agency
 — ORIGINAL LENDERS appearing in collections section (list as CHARGE-OFF): Wells Fargo, Bank of America, Capital One, Chase, Citibank, Discover, Upstart, OneMain, Synchrony, any recognizable bank/lender/finance company name — these are charge-offs being tracked in the collections section, not third-party collections
 
 If there is NO dedicated Collections section, identify collectors by:
 • Creditor name includes: Recovery, Acquisitions, Funding, Collections, Portfolio, Acceptance, Solutions, Associates
-• Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Caine & Weiner, Nationwide Capital
+• Known collector names: Midland Credit, Midland Funding, Portfolio Recovery, LVNV Funding, Cavalry Portfolio, Jefferson Capital, Asset Acceptance, Convergent Outsourcing, Enhanced Recovery, IC System, Pinnacle Credit, Resurgent Capital, National Credit Adjusters, Sherman Financial, Caine & Weiner, Nationwide Capital, Credence RM
 • Account opened date is LATER than the original delinquency date
 
-ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: "CBE Group (Charter Communications) $110 (Jan 26)". If no original creditor is listed, just use the collector name alone.
-
-ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", or "ORIGINAL CREDITOR:" comment fields and include the original creditor name in parentheses after the collector name. Example: CBE Group (Charter Communications) 110 (Jan 26). If no original creditor is listed, just use the collector name alone.
+ORIGINAL CREDITOR: Always check for "Original Creditor", "Agency Client", "Client", or "ORIGINAL CREDITOR:" fields anywhere in the account data — not just in dedicated Collections sections. When found, include the original creditor name in parentheses after the collector name. This applies to ALL collection accounts. Example: Caine & Weiner (PROGRESSIVE) $0 (09/23). If no original creditor field is present anywhere in the account data, use the collector name alone.
 
 DATE for collections: Use Date Assigned or Date Opened. Format: Mon YY
 
@@ -114,6 +118,7 @@ ALL FORMATS — UNIVERSAL RULE:
 • Before moving on from any account, check if there is ANY "Payment Summary" table, "payment count" field, or delinquency comment. If the 30/60/90 Day count is non-zero OR any delinquency comment exists, that account MUST be listed as a late payment.
 • Never rely solely on grid cells — they are frequently blank in text-extracted PDFs even when delinquencies exist.
 • SAME CREDITOR MULTIPLE ACCOUNTS: If the same creditor (e.g. Affirm) has MULTIPLE separate accounts (different account numbers, different open dates), each account with late payments is its OWN separate late payment entry. Do NOT merge them into one. List each account separately even if the creditor name is the same — they are distinct tradelines.
+• CHILD SUPPORT ACCOUNTS: Treat child support accounts like any other tradeline. If the payment history grid shows 120 codes (or any late codes), list each child support account separately as a late payment — do NOT skip or merge them.
 
 For EACH account with ANY late payment history:
 • Record: creditor name, worst delinquency level found (30/60/90/120), most recent month/year of that worst delinquency
@@ -123,7 +128,9 @@ STEP 5 — COUNT VERIFICATION
 ═══════════════════════════════════════════
 Count charge-offs, collections, public records, and late payments separately.
 NEGATIVE ACCOUNTS total = charge-offs + collections + public records + late payments
-CRITICAL COUNT RULE: Write ALL section items FIRST. Then physically count every line item you wrote. The NEGATIVE ACCOUNTS total and each section header number [X] must equal the exact count of lines listed under it � not an estimate, not a guess from a summary table. If your count says 13 items but a summary elsewhere says 19, trust your count of listed items, not the summary. Recount if needed before writing any number.
+The number in the section header MUST exactly match the number of items listed below it.
+Count items AFTER listing them to verify before writing the header number.
+CRITICAL: NEVER use count numbers from the credit report itself (such as "Derogatory: 2", "Collections: 5", "Total Accounts: 6", "Delinquent: 3", or any Summary section counts). Those are the bureau's own categorization and will NOT match yours. ONLY count the items you personally listed in Steps 1–4. If you listed 13 items, the header says 13 — regardless of what any report summary table shows.
 
 ═══════════════════════════════════════════
 STEP 6 — DISPUTES
@@ -313,7 +320,7 @@ Key reminders:
 2. Check Payment Summary count tables AND LAST REPORTED DELINQUENCIES comments for every account — do not rely on grid cells alone
 3. Charge-offs = original creditor defaults. Collections = third-party debt buyers/collectors.
 4. Public records get their own section
-5. Verify section counts match deduplicated item counts before writing headers`
+5. Count ONLY what you listed — never use the report's own summary counts`
     : `Please produce the consultation notes for this credit report following the exact format specified.
 
 Key reminders:
@@ -321,52 +328,75 @@ Key reminders:
 2. Check Payment Summary count tables AND LAST REPORTED DELINQUENCIES comments for every account — do not rely on grid cells alone
 3. Charge-offs = original creditor defaults. Collections = third-party debt buyers/collectors.
 4. Public records get their own section
-5. Verify section counts match item counts before writing headers`;
+5. Count ONLY what you listed — never use the report's own summary counts`;
 
   contentBlocks.push({ type: 'text', text: instructionText });
 
-  // ── Call Anthropic API ─────────────────────────────────────
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 6000,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: contentBlocks }],
-      }),
-    });
+  // ── Call Anthropic API with auto-retry on overloaded ───────
+  const RETRY_DELAYS = [5000, 10000, 15000];
+  let lastError = null;
 
-    const data = await response.json();
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 6000,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: contentBlocks }],
+        }),
+      });
 
-    if (data.error) {
-      console.error('Anthropic error:', data.error);
+      const data = await response.json();
+
+      if (data.error) {
+        const isOverloaded =
+          data.error.type === 'overloaded_error' ||
+          (data.error.message && data.error.message.toLowerCase().includes('overloaded'));
+
+        if (isOverloaded && attempt < RETRY_DELAYS.length) {
+          const waitSec = RETRY_DELAYS[attempt] / 1000;
+          console.log(`Anthropic overloaded — retrying in ${waitSec}s (attempt ${attempt + 1} of ${RETRY_DELAYS.length})`);
+          await new Promise(r => setTimeout(r, RETRY_DELAYS[attempt]));
+          continue;
+        }
+
+        console.error('Anthropic error:', data.error);
+        return {
+          statusCode: 500,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: `AI error: ${data.error.message}` }),
+        };
+      }
+
+      const notes = data.content.map(b => b.text || '').join('').trim();
+
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ error: `AI error: ${data.error.message}` }),
+        body: JSON.stringify({ notes }),
       };
+
+    } catch (err) {
+      lastError = err;
+      if (attempt < RETRY_DELAYS.length) {
+        const waitSec = RETRY_DELAYS[attempt] / 1000;
+        console.log(`Request error — retrying in ${waitSec}s (attempt ${attempt + 1} of ${RETRY_DELAYS.length})`);
+        await new Promise(r => setTimeout(r, RETRY_DELAYS[attempt]));
+      }
     }
-
-    const notes = data.content.map(b => b.text || '').join('').trim();
-
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ notes }),
-    };
-
-  } catch (err) {
-    console.error('Function error:', err);
-    return {
-      statusCode: 500,
-      headers: corsHeaders,
-      body: JSON.stringify({ error: `Server error: ${err.message}` }),
-    };
   }
+
+  console.error('All retry attempts exhausted:', lastError);
+  return {
+    statusCode: 500,
+    headers: corsHeaders,
+    body: JSON.stringify({ error: `Server error: ${lastError ? lastError.message : 'Unknown error after retries'}` }),
+  };
 };
