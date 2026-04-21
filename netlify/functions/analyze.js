@@ -332,7 +332,7 @@ Key reminders:
   contentBlocks.push({ type: 'text', text: instructionText });
 
   // ── Call Anthropic API with auto-retry on overloaded ───────
-  const RETRY_DELAYS = [5000, 10000, 15000];
+  const RETRY_DELAYS = [3000, 6000];
   let lastError = null;
 
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
