@@ -303,10 +303,17 @@ exports.handler = async (event) => {
   }
 
   // ── Build message content ──────────────────────────────────
-  const contentBlocks = files.map((f, i) => ({
-    type: 'text',
-    text: `=== CREDIT REPORT ${i + 1} OF ${fileCount}: ${f.name} (${f.pages} pages) ===\n${f.text}`,
-  }));
+  // Truncate each file to prevent Netlify timeout on large multi-bureau uploads
+  const MAX_CHARS_PER_FILE = 18000;
+  const contentBlocks = files.map((f, i) => {
+    const truncated = f.text.length > MAX_CHARS_PER_FILE
+      ? f.text.slice(0, MAX_CHARS_PER_FILE) + '\n[...report truncated for processing...]'
+      : f.text;
+    return {
+      type: 'text',
+      text: `=== CREDIT REPORT ${i + 1} OF ${fileCount}: ${f.name} (${f.pages} pages) ===\n${truncated}`,
+    };
+  });
 
   const instructionText = fileCount > 1
     ? `Please produce the consultation notes for these ${fileCount} credit report PDFs following the exact format specified.
